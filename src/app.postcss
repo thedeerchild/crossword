@@ -1,2 +1,12 @@
-/*place global styles here */
-html, body { @apply h-full; }
+@import './styles/reset.css';
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+:root {
+	--theme-font-family-base: 'Space Grotesk', sans-serif;
+	--theme-font-family-heading: 'Space Grotesk', sans-serif;
+}
+
+html,
+body {
+	@apply min-h-full;
+}

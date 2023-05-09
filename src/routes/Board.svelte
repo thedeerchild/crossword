@@ -1,9 +1,5 @@
-<script lang="ts" context="module">
-	type CursorDir = 'across' | 'down';
-</script>
-
 <script lang="ts">
-	import { type Cursor, flipDirection } from './cursor';
+	import { flipDirection, type Cursor } from './cursor';
 	import { Grid, GridSquare } from './grid';
 
 	export let grid: Grid = new Grid(new Array(10 * 10).fill(GridSquare.LETTER));

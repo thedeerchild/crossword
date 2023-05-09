@@ -261,6 +261,9 @@ export class Grid {
 		};
 	}
 
+	/**
+	 * Toggles the square at idx (and its symmetric counterpart), returning true if the square is being set to a Wall (and its content should be cleared).
+	 */
 	toggleSquare(idx: number) {
 		const newSquare =
 			this._squares[idx] === GridSquare.LETTER ? GridSquare.WALL : GridSquare.LETTER;

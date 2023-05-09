@@ -268,7 +268,7 @@ describe('Grid', () => {
 						assert.isNull(ws[tc.direction], `should not have received cursor for grid index ${i}`);
 					} else {
 						assert.equal(
-							ws[tc.direction]?.index,
+							ws[tc.direction],
 							base35Decode(expectedIndex),
 							`incorrect word start index at grid index ${i}`
 						);

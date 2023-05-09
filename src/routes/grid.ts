@@ -118,9 +118,9 @@ export class Grid {
 	}
 
 	/**
-	 * Returns a cursor to the current word start in each direction, given a grid index. Returns null in the case of a single letter run or wall square.
+	 * Returns the grid index for the current word start in each direction, given a starting location as a grid index. Returns null in the case of a single letter run or wall square.
 	 */
-	getCurrentWordStart(idx: number): { [key in Direction]: Cursor | null } {
+	getCurrentWordStart(idx: number): { [key in Direction]: number | null } {
 		if (this._squares[idx] === GridSquare.WALL) {
 			return {
 				across: null,
@@ -128,7 +128,7 @@ export class Grid {
 			};
 		}
 
-		let across: Cursor | null = null;
+		let across: number | null = null;
 		const acrossStarts = this._wordStarts.filter((x) => x.direction !== 'down');
 		for (let iter = idx; iter >= Math.floor(idx / this.width) * this.width; iter--) {
 			if (this._squares[iter] === GridSquare.WALL) {
@@ -137,12 +137,12 @@ export class Grid {
 
 			const start = acrossStarts.find((x) => x.index === iter);
 			if (start) {
-				across = { index: start.index, direction: 'across' };
+				across = start.index;
 				break;
 			}
 		}
 
-		let down: Cursor | null = null;
+		let down: number | null = null;
 		const downStarts = this._wordStarts.filter((x) => x.direction !== 'across');
 		for (let iter = idx; iter >= 0; iter -= this.width) {
 			if (this._squares[iter] === GridSquare.WALL) {
@@ -151,7 +151,7 @@ export class Grid {
 
 			const start = downStarts.find((x) => x.index === iter);
 			if (start) {
-				down = { index: start.index, direction: 'down' };
+				down = start.index;
 				break;
 			}
 		}
@@ -182,11 +182,11 @@ export class Grid {
 			(x) => x.direction !== flipDirection(current.direction)
 		);
 
-		const { [current.direction]: currentWS } = this.getCurrentWordStart(current.index);
+		const { [current.direction]: currentStartGridIndex } = this.getCurrentWordStart(current.index);
 
 		let currentWSIndex;
-		if (currentWS !== null) {
-			currentWSIndex = matchingWordStarts.findIndex((x) => x.index === currentWS.index);
+		if (currentStartGridIndex !== null) {
+			currentWSIndex = matchingWordStarts.findIndex((x) => x.index === currentStartGridIndex);
 		} else {
 			// Couldn't find an exact match, so start from the last valid word match before the cursor location.
 			currentWSIndex = matchingWordStarts.findIndex((x) => x.index > current.index) - 1;
@@ -237,11 +237,11 @@ export class Grid {
 			(x) => x.direction !== flipDirection(current.direction)
 		);
 
-		const { [current.direction]: currentWS } = this.getCurrentWordStart(current.index);
+		const { [current.direction]: currentStartGridIndex } = this.getCurrentWordStart(current.index);
 
 		let currentWSIndex;
-		if (currentWS !== null) {
-			currentWSIndex = matchingWordStarts.findIndex((x) => x.index === currentWS.index);
+		if (currentStartGridIndex !== null) {
+			currentWSIndex = matchingWordStarts.findIndex((x) => x.index === currentStartGridIndex);
 		} else {
 			// Couldn't find an exact match, so start from the last valid word match after the cursor location.
 			currentWSIndex = matchingWordStarts.findIndex((x) => x.index < current.index) + 1;

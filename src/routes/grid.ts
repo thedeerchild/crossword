@@ -1,4 +1,4 @@
-import { type Cursor, flipDirection, type Direction } from './cursor';
+import { flipDirection, type Cursor, type Direction } from './cursor';
 
 type WordStart = {
 	index: number;
@@ -10,6 +10,16 @@ export enum GridSquare {
 	WALL
 }
 
+/**
+ * returns `sqrt(numCells)` if numCells is a square number, otherwise defaulting to 1.
+ */
+function computeWidth(numCells: number) {
+	if (Math.sqrt(numCells) - Math.floor(Math.sqrt(numCells)) < Number.EPSILON) {
+		return Math.floor(Math.sqrt(numCells));
+	}
+	return 1;
+}
+
 export class Grid {
 	private _squares: GridSquare[];
 	width: number;
@@ -18,18 +28,22 @@ export class Grid {
 
 	static fromString(diagram: string) {
 		const clean = diagram.replaceAll('-', '').replaceAll('|', '').trim().replaceAll(' ', '');
-		const width = clean.indexOf('\n');
+		let width = clean.indexOf('\n');
 		const squares = clean
 			.replaceAll('\n', '')
 			.split('')
 			.map((x) => (x === 'W' ? GridSquare.WALL : GridSquare.LETTER));
+
+		if (width < 1) {
+			width = computeWidth(squares.length);
+		}
 
 		return new Grid(squares, width);
 	}
 
 	constructor(squares: GridSquare[], width?: number) {
 		this._squares = squares;
-		this.width = width || Math.floor(Math.sqrt(this.squares.length));
+		this.width = width || computeWidth(this.squares.length);
 		// TODO: assert squares are symmetric
 		this.refreshWordStarts();
 	}

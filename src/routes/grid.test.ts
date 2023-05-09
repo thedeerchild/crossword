@@ -247,7 +247,7 @@ describe('Grid', () => {
 				description: 'handles backslash walls down',
 				direction: 'down',
 				diagram: `
-          W1234
+          W.234
           5W234
           5BW34
           5BHW4
@@ -261,24 +261,18 @@ describe('Grid', () => {
 				const g = Grid.fromString(tc.diagram);
 				const expectations = parseGridDiagram(tc.diagram);
 				expectations.forEach((expectedIndex, i) => {
-					const ws = g.getCurrentWordStart({ index: i, direction: tc.direction });
+					const ws = g.getCurrentWordStart(i);
 
 					if (expectedIndex === 'W' || expectedIndex === '.') {
 						// Walls and one-letter runs return their own index as the word start.
-						assert.equal(ws.index, i, `incorrect word start index at grid index ${i}`);
+						assert.isNull(ws[tc.direction], `should not have received cursor for grid index ${i}`);
 					} else {
 						assert.equal(
-							ws.index,
+							ws[tc.direction]?.index,
 							base35Decode(expectedIndex),
 							`incorrect word start index at grid index ${i}`
 						);
 					}
-
-					assert.equal(
-						ws.direction,
-						tc.direction,
-						`incorrect word start direction for grid index ${i}`
-					);
 				});
 			});
 		});

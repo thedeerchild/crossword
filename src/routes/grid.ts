@@ -118,48 +118,45 @@ export class Grid {
 	}
 
 	/**
-	 * Returns a cursor to the current word start, given a cursor within the word. Returns the input cursor in the case of a single letter run or wall square.
+	 * Returns a cursor to the current word start in each direction, given a grid index. Returns null in the case of a single letter run or wall square.
 	 */
-	getCurrentWordStart(current: Cursor): Cursor {
-		if (this._squares[current.index] === GridSquare.WALL) {
-			return current;
+	getCurrentWordStart(idx: number): { [key in Direction]: Cursor | null } {
+		if (this._squares[idx] === GridSquare.WALL) {
+			return {
+				across: null,
+				down: null
+			};
 		}
 
-		const validWordStarts = this._wordStarts.filter((x) =>
-			[current.direction, 'both'].includes(x.direction)
-		);
-
-		if (current.direction === 'across') {
-			for (
-				let iter = current.index;
-				iter >= Math.floor(current.index / this.width) * this.width;
-				iter--
-			) {
-				if (this._squares[iter] === GridSquare.WALL) {
-					break;
-				}
-
-				const start = validWordStarts.find((x) => x.index === iter);
-				if (start) {
-					return { index: start.index, direction: current.direction };
-				}
-			}
-
-			return current;
-		}
-
-		for (let iter = current.index; iter >= 0; iter -= this.width) {
+		let across: Cursor | null = null;
+		const acrossStarts = this._wordStarts.filter((x) => x.direction !== 'down');
+		for (let iter = idx; iter >= Math.floor(idx / this.width) * this.width; iter--) {
 			if (this._squares[iter] === GridSquare.WALL) {
 				break;
 			}
 
-			const start = validWordStarts.find((x) => x.index === iter);
+			const start = acrossStarts.find((x) => x.index === iter);
 			if (start) {
-				return { index: start.index, direction: current.direction };
+				across = { index: start.index, direction: 'across' };
+				break;
 			}
 		}
 
-		return current;
+		let down: Cursor | null = null;
+		const downStarts = this._wordStarts.filter((x) => x.direction !== 'across');
+		for (let iter = idx; iter >= 0; iter -= this.width) {
+			if (this._squares[iter] === GridSquare.WALL) {
+				break;
+			}
+
+			const start = downStarts.find((x) => x.index === iter);
+			if (start) {
+				down = { index: start.index, direction: 'down' };
+				break;
+			}
+		}
+
+		return { across, down };
 	}
 
 	/**
@@ -185,11 +182,13 @@ export class Grid {
 			(x) => x.direction !== flipDirection(current.direction)
 		);
 
-		const currentWS = this.getCurrentWordStart(current);
+		const { [current.direction]: currentWS } = this.getCurrentWordStart(current.index);
 
-		// Couldn't find an exact match, so start from the last valid word match before the cursor location.
-		let currentWSIndex = matchingWordStarts.findIndex((x) => x.index === currentWS.index);
-		if (currentWSIndex < 0) {
+		let currentWSIndex;
+		if (currentWS !== null) {
+			currentWSIndex = matchingWordStarts.findIndex((x) => x.index === currentWS.index);
+		} else {
+			// Couldn't find an exact match, so start from the last valid word match before the cursor location.
 			currentWSIndex = matchingWordStarts.findIndex((x) => x.index > current.index) - 1;
 			// No remaining fuzzy matches either, so we'll need to trigger a wraparound.
 			if (currentWSIndex < -1) {
@@ -238,11 +237,13 @@ export class Grid {
 			(x) => x.direction !== flipDirection(current.direction)
 		);
 
-		const currentWS = this.getCurrentWordStart(current);
+		const { [current.direction]: currentWS } = this.getCurrentWordStart(current.index);
 
-		// Couldn't find an exact match, so start from the last valid word match after the cursor location.
-		let currentWSIndex = matchingWordStarts.findIndex((x) => x.index === currentWS.index);
-		if (currentWSIndex < 0) {
+		let currentWSIndex;
+		if (currentWS !== null) {
+			currentWSIndex = matchingWordStarts.findIndex((x) => x.index === currentWS.index);
+		} else {
+			// Couldn't find an exact match, so start from the last valid word match after the cursor location.
 			currentWSIndex = matchingWordStarts.findIndex((x) => x.index < current.index) + 1;
 
 			// No remaining fuzzy matches either, so we'll need to trigger a wraparound.

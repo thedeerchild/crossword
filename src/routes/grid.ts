@@ -27,7 +27,11 @@ export class Grid {
 	private _wordStarts: WordStart[] = [];
 
 	static fromString(diagram: string) {
-		const clean = diagram.replaceAll('-', '').replaceAll('|', '').trim().replaceAll(' ', '');
+		const clean = diagram
+			.replaceAll('-', '')
+			.replaceAll('|', '')
+			.replaceAll(' ', '')
+			.replaceAll('\t', '');
 		let width = clean.indexOf('\n');
 		const squares = clean
 			.replaceAll('\n', '')

@@ -120,8 +120,15 @@ describe('Grid', () => {
 				expect(s).toEqual(['.', 'W', 'W', '.']);
 			});
 
-			it('ignores whitespace characters', () => {
+			it('ignores space characters', () => {
 				const s = parseGridDiagram(Grid.fromString('   . W       \nW. ').toString());
+
+				expect(s).toHaveLength(4);
+				expect(s).toEqual(['.', 'W', 'W', '.']);
+			});
+
+			it('ignores tab characters', () => {
+				const s = parseGridDiagram(Grid.fromString('\t\t\t.\tW\t\t\t\t\t\t\t\nW.\t').toString());
 
 				expect(s).toHaveLength(4);
 				expect(s).toEqual(['.', 'W', 'W', '.']);

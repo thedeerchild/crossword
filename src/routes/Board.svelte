@@ -1,17 +1,16 @@
 <script lang="ts">
-	import { flipDirection, type GridCursor } from './cursor';
+	import { flipDirection, puzzleCursors, type GridCursor } from './cursor';
 	import { GridSquare, gridStore, type Grid } from './grid';
 
 	export let grid: Grid;
 
 	let content: (string | null)[] = new Array(grid.squares.length).fill(null);
 	let refs = new Array(grid.squares.length).fill(null);
-	let cursorRun: number[] = [];
 	let cursor: GridCursor | null = null;
 	let freshFocusShift = false;
 
 	$: cursor && refs[cursor.index]?.focus();
-	$: cursorRun = cursor ? grid.getCurrentWordRun(cursor) : [];
+	$: puzzleCursors.setGridCursor(grid, cursor);
 
 	function getCursor(): GridCursor {
 		if (cursor) {
@@ -215,7 +214,7 @@
 			role="textbox"
 			class:type-letter={square === GridSquare.LETTER}
 			class:type-wall={square === GridSquare.WALL}
-			class:type-run={cursorRun.includes(i)}
+			class:type-run={$puzzleCursors.gridRun?.includes(i)}
 			tabindex="0"
 			on:click={handleClick}
 			on:focus={handleFocus(i)}

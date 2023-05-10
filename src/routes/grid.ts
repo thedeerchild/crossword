@@ -1,4 +1,4 @@
-import { flipDirection, type Cursor, type Direction } from './cursor';
+import { flipDirection, type Direction, type GridCursor } from './cursor';
 
 type WordStart = {
 	index: number;
@@ -70,7 +70,7 @@ export class Grid {
 	/**
 	 * Returns an array of square indexes indicating the word run which contains the cursor, or an empty array if the cursor is not on a valid run (e.g. a wall or single-letter run).
 	 */
-	getCurrentWordRun(current: Cursor): number[] {
+	getCurrentWordRun(current: GridCursor): number[] {
 		if (
 			current.index < 0 ||
 			current.index >= this._squares.length ||
@@ -193,7 +193,7 @@ export class Grid {
 	/**
 	 * Returns a cursor pointing to the next word start in the same direction, or wraps to the first word start in the other direction. Wrapping falls back to the first word start in the same direction, or to a cursor at the beginning of the grid in the case where there are no valid word starts (e.g. the entire grid is walls).
 	 */
-	getNextWordStart(current: Cursor): Cursor {
+	getNextWordStart(current: GridCursor): GridCursor {
 		// No valid word starts or invalid cursor, so construct one at the start of the grid.
 		if (current.index < 0 || current.index >= this._squares.length || this._wordStarts.length < 1) {
 			return { index: 0, direction: flipDirection(current.direction) };
@@ -251,7 +251,7 @@ export class Grid {
 	/**
 	 * Returns the grid index of the previous word start in the same direction. If at the beginning of the grid the returned word start will wrap around to the ;ast word start in the other direction, falling back to the last word start in the same direction. Returns a word start at the end of the grid in the case where there are no valid word starts (e.g. the entire grid is walls).
 	 */
-	getPrevWordStart(current: Cursor): Cursor {
+	getPrevWordStart(current: GridCursor): GridCursor {
 		// No valid word starts or invalid cursor, so construct one at the end of the grid.
 		if (current.index < 0 || current.index >= this._squares.length || this._wordStarts.length < 1) {
 			return { index: this._squares.length, direction: flipDirection(current.direction) };

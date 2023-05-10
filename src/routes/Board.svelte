@@ -1,19 +1,19 @@
 <script lang="ts">
-	import { flipDirection, type Cursor } from './cursor';
 	import { Grid, GridSquare } from './grid';
+	import { flipDirection, type GridCursor } from './cursor';
 
 	export let grid: Grid = new Grid(new Array(10 * 10).fill(GridSquare.LETTER));
 
 	let content: (string | null)[] = new Array(grid.squares.length).fill(null);
 	let refs = new Array(grid.squares.length).fill(null);
-	let cursor: Cursor | null = null;
 	let cursorRun: number[] = [];
+	let cursor: GridCursor | null = null;
 	let freshFocusShift = false;
 
 	$: cursor && refs[cursor.index]?.focus();
 	$: cursorRun = cursor ? grid.getCurrentWordRun(cursor) : [];
 
-	function getCursor(): Cursor {
+	function getCursor(): GridCursor {
 		if (cursor) {
 			return cursor;
 		}

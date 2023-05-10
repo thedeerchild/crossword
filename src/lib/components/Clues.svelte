@@ -15,7 +15,7 @@
 </script>
 
 <script lang="ts">
-	import { puzzleCursors, type Direction, type PuzzleCursors } from '$lib/stores/cursor';
+	import { puzzleCursorsStore, type Direction, type PuzzleCursors } from '$lib/stores/cursor';
 	import { gridStore, type GridWord } from '$lib/stores/grid';
 
 	export let direction: Direction;
@@ -83,18 +83,18 @@
 		{#each clueContent as clue (clue.id)}
 			<li
 				class="border-blue-300"
-				class:bg-blue-300={isPrimary($puzzleCursors, clue)}
-				class:border-l-8={isSecondary($puzzleCursors, clue)}
+				class:bg-blue-300={isPrimary($puzzleCursorsStore, clue)}
+				class:border-l-8={isSecondary($puzzleCursorsStore, clue)}
 			>
 				<label class="py-1">
 					<input
 						class="clue-input"
 						bind:value={clue.value}
 						on:focus={(e) => {
-							puzzleCursors.setPrimaryClueCursor($gridStore, { direction, index: clue.index });
+							puzzleCursorsStore.setPrimaryClueCursor($gridStore, { direction, index: clue.index });
 						}}
 						on:blur={(e) => {
-							puzzleCursors.setPrimaryClueCursor($gridStore, null);
+							puzzleCursorsStore.setPrimaryClueCursor($gridStore, null);
 						}}
 						on:keydown={handleKeyDown}
 					/>

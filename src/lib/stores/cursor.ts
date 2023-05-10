@@ -22,7 +22,7 @@ export type PuzzleCursors = {
 	gridRun: number[] | null;
 };
 
-export const puzzleCursors = (function () {
+export const puzzleCursorsStore = (function () {
 	const { subscribe, set, update } = writable<PuzzleCursors>({
 		across: null,
 		down: null,

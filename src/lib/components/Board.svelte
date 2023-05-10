@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { flipDirection, puzzleCursors, type GridCursor } from '$lib/stores/cursor';
+	import { flipDirection, puzzleCursorsStore, type GridCursor } from '$lib/stores/cursor';
 	import { GridSquare, gridStore, type Grid } from '$lib/stores/grid';
 
 	export let grid: Grid;
@@ -10,7 +10,7 @@
 	let freshFocusShift = false;
 
 	$: cursor && refs[cursor.index]?.focus();
-	$: puzzleCursors.setGridCursor(grid, cursor);
+	$: puzzleCursorsStore.setGridCursor(grid, cursor);
 
 	function getCursor(): GridCursor {
 		if (cursor) {
@@ -214,7 +214,7 @@
 			role="textbox"
 			class:type-letter={square === GridSquare.LETTER}
 			class:type-wall={square === GridSquare.WALL}
-			class:type-run={$puzzleCursors.gridRun?.includes(i)}
+			class:type-run={$puzzleCursorsStore.gridRun?.includes(i)}
 			tabindex="0"
 			on:click={handleClick}
 			on:focus={handleFocus(i)}

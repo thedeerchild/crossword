@@ -65,6 +65,29 @@ export class Grid {
 		return this._squares;
 	}
 
+	get words() {
+		return {
+			across: this._wordStarts
+				.filter((x) => x.direction !== 'down')
+				.map((x) => ({
+					index: x.index,
+					// Safe because we know that we're on a word start, therefore the label must be non-null.
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					label: this.getWordLabelForSquare(x.index)!,
+					length: this.getCurrentWordRun({ index: x.index, direction: 'across' }).length
+				})),
+			down: this._wordStarts
+				.filter((x) => x.direction !== 'across')
+				.map((x) => ({
+					index: x.index,
+					// Safe because we know that we're on a word start, therefore the label must be non-null.
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					label: this.getWordLabelForSquare(x.index)!,
+					length: this.getCurrentWordRun({ index: x.index, direction: 'down' }).length
+				}))
+		};
+	}
+
 	getWordLabelForSquare(idx: number) {
 		const label = this._wordStarts.findIndex((x) => x.index === idx);
 		return label > -1 ? label + 1 : null;

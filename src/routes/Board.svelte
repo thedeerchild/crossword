@@ -34,10 +34,6 @@
 			return;
 		}
 
-		if (onlyLetters) {
-			cursorToNextWord();
-		}
-
 		if (cursor.direction === 'across') {
 			cursor = { ...cursor, index: (cursor.index + 1) % grid.squares.length };
 		} else {
@@ -49,6 +45,12 @@
 				next = (next % grid.squares.length) + 1;
 			}
 			cursor = { ...cursor, index: next };
+		}
+
+		if (onlyLetters) {
+			if (grid.squares[cursor.index] === GridSquare.WALL) {
+				incrementCursor(true);
+			}
 		}
 	}
 
@@ -65,10 +67,6 @@
 			return;
 		}
 
-		if (onlyLetters) {
-			cursorToPrevWord();
-		}
-
 		if (cursor.direction === 'across') {
 			let next = cursor.index - 1;
 			if (next < 0) {
@@ -81,6 +79,12 @@
 				next = next + grid.squares.length;
 			}
 			cursor = { ...cursor, index: next };
+		}
+
+		if (onlyLetters) {
+			if (grid.squares[cursor.index] === GridSquare.WALL) {
+				decrementCursor(true);
+			}
 		}
 	}
 

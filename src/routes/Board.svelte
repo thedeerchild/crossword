@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { Grid, GridSquare } from './grid';
 	import { flipDirection, type GridCursor } from './cursor';
+	import { GridSquare, gridStore, type Grid } from './grid';
 
-	export let grid: Grid = new Grid(new Array(10 * 10).fill(GridSquare.LETTER));
+	export let grid: Grid;
 
 	let content: (string | null)[] = new Array(grid.squares.length).fill(null);
 	let refs = new Array(grid.squares.length).fill(null);
@@ -94,12 +94,12 @@
 
 			// Toggle square type.
 			if (e.code === 'Space') {
-				if (grid.toggleSquare(i)) {
-					content[i] = null;
-					content[grid.squares.length - 1 - i] = null;
-				}
+				// Default behavior is to scroll.
+				e.preventDefault();
 
-				grid = grid;
+				content[i] = null;
+				content[grid.squares.length - 1 - i] = null;
+				gridStore.set(grid.toggleSquare(i));
 			}
 
 			// Toggle cursor direction.
@@ -125,6 +125,9 @@
 					cursor = getCursor();
 					return;
 				}
+
+				// Default behavior is to scroll.
+				e.preventDefault();
 
 				// Set the cursor in the correct direction automatically when on a wall square.
 				if (grid.squares[i] === GridSquare.WALL) {

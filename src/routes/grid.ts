@@ -1,3 +1,4 @@
+import { writable } from 'svelte/store';
 import { flipDirection, type Direction, type GridCursor } from './cursor';
 
 type WordStart = {
@@ -27,9 +28,11 @@ function computeWidth(numCells: number) {
 }
 
 export class Grid {
-	private _squares: GridSquare[];
-	width: number;
+	// Immutable data. If these change, return a new GridData object instead.
+	private readonly _squares: GridSquare[];
+	readonly width: number;
 
+	// Derived data based on the core data above.
 	private _wordStarts: WordStart[] = [];
 
 	static fromString(diagram: string) {
@@ -313,12 +316,12 @@ export class Grid {
 	toggleSquare(idx: number) {
 		const newSquare =
 			this._squares[idx] === GridSquare.LETTER ? GridSquare.WALL : GridSquare.LETTER;
-		this._squares[idx] = newSquare;
-		this._squares[this._squares.length - 1 - idx] = newSquare;
 
-		this.refreshWordStarts();
+		const newSquares = this._squares.slice(0);
+		newSquares[idx] = newSquare;
+		newSquares[this._squares.length - 1 - idx] = newSquare;
 
-		return newSquare === GridSquare.WALL;
+		return new Grid(newSquares, this.width);
 	}
 
 	private refreshWordStarts() {
@@ -371,3 +374,5 @@ export class Grid {
 		return out.join('\n');
 	}
 }
+
+export const gridStore = writable(new Grid([]));

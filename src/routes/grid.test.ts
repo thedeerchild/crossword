@@ -268,14 +268,14 @@ describe('Grid', () => {
 				const g = Grid.fromString(tc.diagram);
 				const expectations = parseGridDiagram(tc.diagram);
 				expectations.forEach((expectedIndex, i) => {
-					const ws = g.getCurrentWordStart(i);
+					const ws = g.getCurrentWord(i);
 
 					if (expectedIndex === 'W' || expectedIndex === '.') {
 						// Walls and one-letter runs return their own index as the word start.
 						assert.isNull(ws[tc.direction], `should not have received cursor for grid index ${i}`);
 					} else {
 						assert.equal(
-							ws[tc.direction],
+							ws[tc.direction]?.index,
 							base35Decode(expectedIndex),
 							`incorrect word start index at grid index ${i}`
 						);

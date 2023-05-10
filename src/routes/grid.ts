@@ -5,6 +5,12 @@ type WordStart = {
 	direction: Direction | 'both';
 };
 
+export type GridWord = {
+	index: number;
+	length: number;
+	label: number;
+};
+
 export enum GridSquare {
 	LETTER,
 	WALL
@@ -122,9 +128,9 @@ export class Grid {
 	}
 
 	/**
-	 * Returns the grid index for the current word start in each direction, given a starting location as a grid index. Returns null in the case of a single letter run or wall square.
+	 * Returns the word specifier for each direction, given a starting location as a grid index. Returns null in the case of a single letter run or wall square.
 	 */
-	getCurrentWordStart(idx: number): { [key in Direction]: number | null } {
+	getCurrentWord(idx: number): { [key in Direction]: GridWord | null } {
 		if (this._squares[idx] === GridSquare.WALL) {
 			return {
 				across: null,
@@ -132,7 +138,7 @@ export class Grid {
 			};
 		}
 
-		let across: number | null = null;
+		let acrossIndex: number | null = null;
 		const acrossStarts = this._wordStarts.filter((x) => x.direction !== 'down');
 		for (let iter = idx; iter >= Math.floor(idx / this.width) * this.width; iter--) {
 			if (this._squares[iter] === GridSquare.WALL) {
@@ -141,12 +147,12 @@ export class Grid {
 
 			const start = acrossStarts.find((x) => x.index === iter);
 			if (start) {
-				across = start.index;
+				acrossIndex = start.index;
 				break;
 			}
 		}
 
-		let down: number | null = null;
+		let downIndex: number | null = null;
 		const downStarts = this._wordStarts.filter((x) => x.direction !== 'across');
 		for (let iter = idx; iter >= 0; iter -= this.width) {
 			if (this._squares[iter] === GridSquare.WALL) {
@@ -155,12 +161,33 @@ export class Grid {
 
 			const start = downStarts.find((x) => x.index === iter);
 			if (start) {
-				down = start.index;
+				downIndex = start.index;
 				break;
 			}
 		}
 
-		return { across, down };
+		return {
+			across:
+				acrossIndex !== null
+					? {
+							index: acrossIndex,
+							// Safe because we know that we're on a word start, therefore the label must be non-null.
+							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+							label: this.getWordLabelForSquare(acrossIndex)!,
+							length: this.getCurrentWordRun({ index: acrossIndex, direction: 'across' }).length
+					  }
+					: null,
+			down:
+				downIndex !== null
+					? {
+							index: downIndex,
+							// Safe because we know that we're on a word start, therefore the label must be non-null.
+							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+							label: this.getWordLabelForSquare(downIndex)!,
+							length: this.getCurrentWordRun({ index: downIndex, direction: 'down' }).length
+					  }
+					: null
+		};
 	}
 
 	/**
@@ -186,11 +213,11 @@ export class Grid {
 			(x) => x.direction !== flipDirection(current.direction)
 		);
 
-		const { [current.direction]: currentStartGridIndex } = this.getCurrentWordStart(current.index);
+		const { [current.direction]: currentStart } = this.getCurrentWord(current.index);
 
 		let currentWSIndex;
-		if (currentStartGridIndex !== null) {
-			currentWSIndex = matchingWordStarts.findIndex((x) => x.index === currentStartGridIndex);
+		if (currentStart !== null) {
+			currentWSIndex = matchingWordStarts.findIndex((x) => x.index === currentStart.index);
 		} else {
 			// Couldn't find an exact match, so start from the last valid word match before the cursor location.
 			currentWSIndex = matchingWordStarts.findIndex((x) => x.index > current.index) - 1;
@@ -241,11 +268,11 @@ export class Grid {
 			(x) => x.direction !== flipDirection(current.direction)
 		);
 
-		const { [current.direction]: currentStartGridIndex } = this.getCurrentWordStart(current.index);
+		const { [current.direction]: currentStart } = this.getCurrentWord(current.index);
 
 		let currentWSIndex;
-		if (currentStartGridIndex !== null) {
-			currentWSIndex = matchingWordStarts.findIndex((x) => x.index === currentStartGridIndex);
+		if (currentStart !== null) {
+			currentWSIndex = matchingWordStarts.findIndex((x) => x.index === currentStart.index);
 		} else {
 			// Couldn't find an exact match, so start from the last valid word match after the cursor location.
 			currentWSIndex = matchingWordStarts.findIndex((x) => x.index < current.index) + 1;

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Board from './Board.svelte';
-	import Clues from './Clues.svelte';
-	import { Grid, gridStore } from './grid';
+	import Board from '$lib/components/Board.svelte';
+	import Clues from '$lib/components/Clues.svelte';
+	import { Grid, gridStore } from '$lib/stores/grid';
 
 	gridStore.set(
 		Grid.fromString(`

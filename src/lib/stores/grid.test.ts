@@ -1,7 +1,6 @@
 import { assert, describe, expect, it } from 'vitest';
-import { Grid, GridSquare } from './grid';
-
 import type { Direction } from './cursor';
+import { Grid, GridSquare } from './grid';
 
 /**
  * Returns an array of elements in a grid diagram, at an index corresponding to their grid index.

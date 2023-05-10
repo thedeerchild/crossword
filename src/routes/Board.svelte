@@ -191,16 +191,13 @@
 		}
 	}
 
-	function handleClick(i: number) {
-		return () => {
-			if (!cursor || freshFocusShift) {
-				freshFocusShift = false;
-				return;
-			}
+	function handleClick() {
+		if (!cursor || freshFocusShift) {
+			freshFocusShift = false;
+			return;
+		}
 
-			console.log('click and flip');
-			cursor = { ...getCursor(), direction: flipDirection(cursor.direction) };
-		};
+		cursor = { ...getCursor(), direction: flipDirection(cursor.direction) };
 	}
 </script>
 
@@ -217,7 +214,7 @@
 			class:type-wall={square === GridSquare.WALL}
 			class:type-run={cursorRun.includes(i)}
 			tabindex="0"
-			on:click={handleClick(i)}
+			on:click={handleClick}
 			on:focus={handleFocus(i)}
 			on:blur={handleBlur}
 			on:keydown={handleKeyDown(i)}

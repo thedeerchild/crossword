@@ -39,6 +39,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"postgres": "^3.3.4",
+		"postgres-bridge": "^1.14.0",
+		"slonik": "^33.3.1",
 		"ulid": "^2.3.0"
 	}
 }

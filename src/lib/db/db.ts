@@ -1,13 +1,15 @@
-import postgres from 'postgres';
-import { createPostgresBridge } from 'postgres-bridge';
+import { env } from '$env/dynamic/private';
+import { createPool } from 'slonik';
 
-const PostgresBridge = createPostgresBridge(postgres);
-const pool = new PostgresBridge({
-	database: import.meta.env.CROSSWORD_DB_NAME || 'crossword_dev',
-	user: import.meta.env.CROSSWORD_DB_USER || 'crossword_dev',
-	host: import.meta.env.CROSSWORD_DB_HOST || '127.0.0.1',
-	password: import.meta.env.CROSSWORD_DB_PASSWORD || 'crossword_dev',
-	port: Number(import.meta.env.CROSSWORD_DB_PORT) || 5432
-});
+const config = {
+	database: env.CROSSWORD_DB_NAME || 'crossword_dev',
+	user: env.CROSSWORD_DB_USER || 'crossword_dev',
+	host: env.CROSSWORD_DB_HOST || '127.0.0.1',
+	password: env.CROSSWORD_DB_PASSWORD || 'crossword_dev',
+	port: Number(env.CROSSWORD_DB_PORT) || 5432
+} as const;
 
-export const connect = async () => await pool.connect();
+export const pool = await createPool(
+	`postgres://${config.user}:${config.password}@${config.host}:${config.port}/${config.database}`,
+	{}
+);

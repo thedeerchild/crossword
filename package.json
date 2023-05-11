@@ -39,6 +39,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"http-status-codes": "^2.2.0",
 		"slonik": "^33.3.1",
 		"ulid": "^2.3.0"
 	}

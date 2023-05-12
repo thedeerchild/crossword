@@ -3,12 +3,12 @@
 // and what to do when importing types
 
 import type { ServerErrorBase } from '$lib/errors/server';
-import type { DatabasePoolConnection } from 'slonik';
+import type { DatabasePool } from 'slonik';
 
 declare global {
 	declare namespace App {
 		interface Locals {
-			db: DatabasePoolConnection;
+			db: Promise<DatabasePool>;
 		}
 		interface Error extends ServerErrorBase {
 			// Allow arbitrary additional fields and only enforce `ServerErrorBase`, since I couldn't get this to play nice with the full (discriminated union) server error.

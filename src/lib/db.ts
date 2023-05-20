@@ -8,13 +8,11 @@ import { promiseWithTimeout } from './promises/timeout';
  */
 const POOL_INIT_TIMEOUT_MS = 3000;
 
-const config = {
-	database: env.CROSSWORD_DB_NAME || 'crossword_dev',
-	user: env.CROSSWORD_DB_USER || 'crossword_dev',
-	host: env.CROSSWORD_DB_HOST || '127.0.0.1',
-	password: env.CROSSWORD_DB_PASSWORD || 'crossword_dev',
-	port: Number(env.CROSSWORD_DB_PORT) || 5432
-} as const;
+const dbUrl = `postgres://${env.CROSSWORD_DB_USER || 'crossword_dev'}:${
+	env.CROSSWORD_DB_PASSWORD || 'crossword_dev'
+}@${env.CROSSWORD_DB_HOST || '127.0.0.1'}:${Number(env.CROSSWORD_DB_PORT) || 5432}/${
+	env.CROSSWORD_DB_NAME || 'crossword_dev'
+}`;
 
 /**
  * Promise that resolves to a database pool, allowing the app to resolve the pool lazily.
@@ -31,10 +29,7 @@ async function initDbPool(
 	retryNum: number
 ) {
 	try {
-		const pool = await createPool(
-			`postgres://${config.user}:${config.password}@${config.host}:${config.port}/${config.database}`,
-			{}
-		);
+		const pool = await createPool(dbUrl, {});
 
 		return resolve(pool);
 	} catch (e) {

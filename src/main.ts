@@ -1,14 +1,21 @@
 import express from 'express';
 import { handler } from '../build/handler.js';
+import { runMigrations } from './migrate';
 
 if (process.argv.includes('--migrate')) {
-	const dbUrl = `postgres://${process.env.CROSSWORD_DB_USER || 'crossword_dev'}:${
-		process.env.CROSSWORD_DB_PASSWORD || 'crossword_dev'
-	}@${process.env.CROSSWORD_DB_HOST || '127.0.0.1'}:${
-		Number(process.env.CROSSWORD_DB_PORT) || 5432
-	}/${process.env.CROSSWORD_DB_NAME || 'crossword_dev'}`;
-
-	console.log(`Migrating ${dbUrl}...`);
+	console.log(`Running migrations...`);
+	try {
+		const progress = await runMigrations();
+		if (progress.num) {
+			console.log(`Migrated ${progress.direction} by ${progress.num} versions successfully`);
+		} else {
+			console.log(`No migrations needed`);
+		}
+		process.exit(0);
+	} catch (e) {
+		console.error(e);
+		process.exit(1);
+	}
 }
 
 const app = express();

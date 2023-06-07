@@ -18,17 +18,19 @@ type ApiCallResult<RespSchema> =
 
 export async function makeApiCall<Route extends RouteName>(
 	fetch: (input: RequestInfo | URL, init?: RequestInit | undefined) => Promise<Response>,
-	routeName: RouteName,
-	data: unknown
+	routeName: Route,
+	routeParams: Parameters<(typeof API_ROUTES)[Route]['path']>[0],
+	data: z.infer<(typeof API_ROUTES)[Route]['requestSchema']>
 ): Promise<ApiCallResult<z.infer<(typeof API_ROUTES)[Route]['responseSchema']>>> {
-	const path = API_ROUTES[routeName].path;
-	const res = await fetch(`${base}${path}`, {
-		method: 'POST',
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	const res = await fetch(`${base}${API_ROUTES[routeName].path(routeParams)}`, {
+		method: API_ROUTES[routeName].method,
 		headers: {
 			Accept: 'application/json',
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify(data)
+		body: data ? JSON.stringify(data) : undefined
 	});
 
 	return {

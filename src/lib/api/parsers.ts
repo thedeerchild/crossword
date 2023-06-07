@@ -4,7 +4,10 @@ import { z } from 'zod';
 import { throwServerErrorResponse } from './errors';
 import { API_ROUTES, type RouteName } from './routes';
 
-export async function parseApiRequest(routeName: RouteName, req: Request) {
+export async function parseApiRequest<Route extends RouteName>(
+	routeName: Route,
+	req: Request
+): Promise<z.infer<(typeof API_ROUTES)[Route]['requestSchema']>> {
 	const schema = API_ROUTES[routeName].requestSchema;
 
 	let data;

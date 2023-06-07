@@ -15,8 +15,9 @@
 </script>
 
 <script lang="ts">
+	import type { GridWord } from '$lib/models/grid';
 	import { puzzleCursorsStore, type Direction, type PuzzleCursors } from '$lib/stores/cursor';
-	import { gridStore, type GridWord } from '$lib/stores/grid';
+	import { gridStore } from '$lib/stores/grid';
 
 	export let direction: Direction;
 	export let locations: GridWord[] = [];

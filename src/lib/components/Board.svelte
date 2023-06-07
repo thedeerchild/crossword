@@ -1,6 +1,7 @@
 <script lang="ts">
+	import { Grid, GridSquare } from '$lib/models/grid';
 	import { flipDirection, puzzleCursorsStore, type GridCursor } from '$lib/stores/cursor';
-	import { GridSquare, gridStore, type Grid } from '$lib/stores/grid';
+	import { gridStore } from '$lib/stores/grid';
 
 	export let grid: Grid;
 

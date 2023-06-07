@@ -1,5 +1,5 @@
 import { assert, describe, expect, it } from 'vitest';
-import type { Direction } from './cursor';
+import type { Direction } from '../stores/cursor';
 import { Grid, GridSquare } from './grid';
 
 /**

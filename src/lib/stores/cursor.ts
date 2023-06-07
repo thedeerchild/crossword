@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import type { Grid, GridWord } from './grid';
+import type { Grid, GridWord } from '../models/grid';
 
 export type Direction = 'across' | 'down';
 export function flipDirection(d: Direction) {

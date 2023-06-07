@@ -1,24 +1,14 @@
 <script lang="ts">
 	import Board from '$lib/components/Board.svelte';
 	import Clues from '$lib/components/Clues.svelte';
-	import { Grid, gridStore } from '$lib/stores/grid';
+	import { Grid } from '$lib/models/grid';
+	import { gridStore } from '$lib/stores/grid';
+	import type { PageData } from './$types';
 
-	gridStore.set(
-		Grid.fromString(`
-      ----------
-      |..........|
-      |..........|
-      |..........|
-      |..........|
-      |..........|
-      |..........|
-      |..........|
-      |..........|
-      |..........|
-      |..........|
-      ----------
-	  `)
-	);
+	export let data: PageData;
+
+	$: console.log({ data });
+	$: data.grid && gridStore.set(Grid.fromJSON(data.grid));
 </script>
 
 <div class="flex flex-col sm:flex-row max-h-full p-4">

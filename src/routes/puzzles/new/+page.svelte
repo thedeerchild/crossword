@@ -12,6 +12,8 @@
 
 <div class="flex">
 	<form method="POST" use:enhance>
+		<label for="name">Name</label>
+		<input class="input" name="name" type="text" />
 		<label for="width">Width</label>
 		<select name="width" class="select">
 			{#each sizes as size}

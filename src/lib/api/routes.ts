@@ -16,6 +16,17 @@ export const API_ROUTES = {
 				id: z.string().ulid().nullable()
 			})
 			.strict()
+	},
+	GetPuzzle: {
+		method: 'GET',
+		path: ({ id }: { id: string }) => `/puzzles/${id}`,
+		requestSchema: z.undefined(),
+		responseSchema: z
+			.object({
+				// TODO: Extract Grid JSON type
+				puzzle: z.any()
+			})
+			.strict()
 	}
 } as const;
 

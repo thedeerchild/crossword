@@ -6,7 +6,8 @@ import type { Actions } from './$types';
 export const actions: Actions = {
 	default: async ({ fetch, request }) => {
 		const formData = await request.formData();
-		const resp = await makeApiCall(fetch, 'CreatePuzzle', {
+		const resp = await makeApiCall(fetch, 'CreatePuzzle', undefined, {
+			name: (formData.get('name') as string) || 'Untitled',
 			width: Number(formData.get('width'))
 		});
 
